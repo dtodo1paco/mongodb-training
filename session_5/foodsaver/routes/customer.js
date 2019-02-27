@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var verifyToken = require(".....dondeTuTengasTuTokenModule");
 const customerController = require('../controllers/customer');
 
 router.get('/:username', customerController.findByUsername);
