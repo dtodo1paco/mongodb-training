@@ -1,0 +1,35 @@
+> db.customers.find({}, {"First Name": true, "Last Name":true, "Country": true})
+
+> db.customers.find({"Country":"Mexico"}, {"First Name": true, "Last Name":true, "Country": true})
+
+> db.customers.find({"Country":"Mexico"}, {"First Name": true, "Last Name":true, "Country": true}).limit(5).skip(10)
+
+db.films.find({"Length": {$exists: true}}).forEach(function(obj) { 
+    obj.Length = new NumberInt(obj.Length);
+    db.films.save(obj);
+	print("saving object: "+obj._id);
+});
+
+
+> db.films.count({"Length":{$lt: 50}},{"Title":true, "Length":true})
+
+> db.films.find({$and: [{"Length":{$lt: 50}}, {"Category":"Horror"}]}, {"Title":true, "Length":true, "Category":true})
+
+> db.films.find({"Title": /^ALI/}, {"Title":true, "Length":true, "Category":true})
+
+
+> db.films.find({"Title": /^ALI/}, {"Title":true, "Length":true, "Category":true}).sort({Title: -1})
+
+> db.films.find({$and: [{"Title": /^ALI/}, {"Category":{$ne: "Horror"}}]}, {"Title":true, "Length":true, "Category":true})
+
+
+> db.films.aggregate( [ { $match : {$and: [ { "Actors.First name": "JULIA"}, {"Actors.Last name": "BARRYMORE"} ]}}, {$group: {_id:"$Category", "total":{ $sum: 1 }, "avgLength": { $avg: "$Length"} } } ])
+
+
+> db.films.aggregate( [ { $match : {$and: [ { "Actors.First name": "HENRY"}, {"Actors.Last name": "BERRY"} ]}}, { $lookup: {from: "customers", "localField": "_id", foreignField: "Rentals.filmId", as: "customerData"}} , {$unwind: "$customerData"}, {$group: {_id:"$Category", "avgLength":{ $avg: "$Length" } } }, {$project: {"Title":true, "Category": true, "avgLength": "$avgLength"}} ])
+
+> db.films.aggregate( [ { $match : {$and: [ { "Actors.First name": "HENRY"}, {"Actors.Last name": "BERRY"} ]}}, { $lookup: {from: "customers", "localField": "_id", foreignField: "Rentals.filmId", as: "customerData"}} , {$unwind: "$customerData"}, {$group: {_id:"$customerData.City", "avgLength":{ $avg: "$Length" } } }, {$project: {"Title":true, "City": "$customerData.City", "avgLength": "$avgLength"}} ])
+
+
+
+
