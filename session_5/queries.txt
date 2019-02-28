@@ -1,0 +1,17 @@
+> var reduceFilms = function(k, values) { var totalLength = 0; for (var i=0; i<values.length; i++) { totalLength += values[i]; }; return totalLength; }
+
+> var mapFilms = function() { emit(this.Rating, this.Length); }
+
+> db.films.mapReduce(mapFilms, reduceFilms, {out: {inline: 1}});
+
+
+
+
+> db.films.aggregate([ {$match: {"_id":65}}, {$unwind: "$Actors"}, {$lookup: {"from": "actors", "foreignField":"_id", "localField": "Actors.actorId", "as":"actorcito" } } ]).pretty();
+
+
+> db.films.aggregate([ {$match: {"_id":65}}, {$unwind: "$Actors"}, {$lookup: {"from": "actors", "foreignField":"_id", "localField": "Actors.actorId", "as":"actorcito" } }, {$unwind: "$actorcito"}, {$project:{"actorcito.address":1}} ]);
+
+
+> db.customers.aggregate([ {$match: {"_id":409}}, {$unwind: "$Rentals"}, {$group: {"_id":"$Rentals.staffId", "total": {$sum: 1}}} ]);
+
